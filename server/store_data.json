@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "_id": "452939b8-cf1c-41a6-95a6-c294d6d4013a",
+      "id": "452939b8-cf1c-41a6-95a6-c294d6d4013a",
+      "name": "Test User",
+      "phone": "9876543210",
+      "email": "test@example.com",
+      "passwordHash": "$2b$10$Kv64t.HfIhr9rSmbnBYf/.UDWMQvgTv2k9CCwaTbPfsuVlwLwAKIu",
+      "createdAt": "2026-10-29T11:04:56.272Z",
+      "updatedAt": "2026-10-29T11:04:56.272Z"
+    }
+  ],
+  "vehicles": [
+    {
+      "_id": "d3d73c36-025f-4ad4-8977-bf11916c7a8e",
+      "id": "d3d73c36-025f-4ad4-8977-bf11916c7a8e",
+      "user": "452939b8-cf1c-41a6-95a6-c294d6d4013a",
+      "type": "car",
+      "brand": "Hyundai",
+      "model": "i20",
+      "segment": "hatchback",
+      "fuel": "petrol",
+      "year": 2021,
+      "regNo": "MH12AB1234",
+      "createdAt": "2026-10-29T11:05:03.050Z",
+      "updatedAt": "2026-10-29T11:05:03.050Z"
+    }
+  ],
+  "orders": []
+}

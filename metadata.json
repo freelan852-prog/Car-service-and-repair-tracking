@@ -1,0 +1,6 @@
+{
+  "name": "AutoTrust Car Care",
+  "description": "Transparent car service booking platform with vehicle & fuel-specific pricing, price lock guarantee, single-sheet checkout, and live bay inspection tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
