@@ -33,14 +33,28 @@ export default function AuthScreen() {
     password: '',
   });
 
-  const handleLoginSubmit = (e) => {
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    loginUser(loginForm.email, loginForm.password);
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await loginUser(loginForm.email, loginForm.password);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
-  const handleRegisterSubmit = (e) => {
+  const handleRegisterSubmit = async (e) => {
     e.preventDefault();
-    registerUser(registerForm);
+    if (submitting) return;
+    setSubmitting(true);
+    try {
+      await registerUser(registerForm);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -143,10 +157,24 @@ export default function AuthScreen() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 rounded-xl bg-[#0B1F3A] hover:bg-[#132B4F] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
+                  disabled={submitting}
+                  className={`w-full py-3 px-4 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all ${
+                    submitting
+                      ? 'bg-[#0B1F3A]/70 cursor-wait'
+                      : 'bg-[#0B1F3A] hover:bg-[#132B4F] active:scale-[0.99] cursor-pointer'
+                  }`}
                 >
-                  <span>Sign In</span>
-                  <ArrowRight className="w-4 h-4 text-[#14B8A6]" />
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Signing In...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Sign In</span>
+                      <ArrowRight className="w-4 h-4 text-[#14B8A6]" />
+                    </>
+                  )}
                 </button>
               </div>
 
@@ -253,10 +281,24 @@ export default function AuthScreen() {
               <div className="pt-2">
                 <button
                   type="submit"
-                  className="w-full py-3 px-4 rounded-xl bg-[#14B8A6] hover:bg-[#0d9488] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all active:scale-[0.99]"
+                  disabled={submitting}
+                  className={`w-full py-3 px-4 rounded-xl text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-sm transition-all ${
+                    submitting
+                      ? 'bg-[#14B8A6]/70 cursor-wait'
+                      : 'bg-[#14B8A6] hover:bg-[#0d9488] active:scale-[0.99] cursor-pointer'
+                  }`}
                 >
-                  <span>Register & Continue</span>
-                  <ArrowRight className="w-4 h-4" />
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Creating Account...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Register & Continue</span>
+                      <ArrowRight className="w-4 h-4" />
+                    </>
+                  )}
                 </button>
               </div>
 

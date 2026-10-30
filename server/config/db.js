@@ -11,6 +11,20 @@ dotenv.config();
 const DEFAULT_URI = 'mongodb+srv://Auto_db_trust:aMdkHcFVaR5VzB5V@autotrust.ho7gcej.mongodb.net/';
 
 export async function connectDB() {
+  if (mongoose.connection.readyState === 1) {
+    return mongoose;
+  }
+  if (mongoose.connection.readyState === 2) {
+    let attempts = 0;
+    while (mongoose.connection.readyState === 2 && attempts < 10) {
+      await new Promise((r) => setTimeout(r, 100));
+      attempts++;
+    }
+    if (mongoose.connection.readyState === 1) {
+      return mongoose;
+    }
+  }
+
   const uri =
     process.env.MONGO_URI ||
     process.env['mongodb+srv://Auto_db_trust:aMdkHcFVaR5VzB5V@autotrust.ho7gcej.mongodb.net/'] ||

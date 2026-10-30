@@ -7,7 +7,10 @@ import fs from 'fs';
 import path from 'path';
 import crypto from 'crypto';
 
-const DATA_FILE = path.resolve(process.cwd(), 'server', 'store_data.json');
+const isServerless = Boolean(process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.LAMBDA_TASK_ROOT);
+const DATA_FILE = isServerless
+  ? path.resolve('/tmp', 'autotrust_store.json')
+  : path.resolve(process.cwd(), 'server', 'store_data.json');
 
 let store = {
   users: [],
@@ -20,16 +23,26 @@ try {
   if (fs.existsSync(DATA_FILE)) {
     const raw = fs.readFileSync(DATA_FILE, 'utf-8');
     store = JSON.parse(raw);
+  } else if (!isServerless) {
+    const localFile = path.resolve(process.cwd(), 'server', 'store_data.json');
+    if (fs.existsSync(localFile)) {
+      store = JSON.parse(fs.readFileSync(localFile, 'utf-8'));
+    }
   }
 } catch (e) {
-  console.warn('[DataStore] Failed to read storage file, initializing empty store:', e.message);
+  // Silent fallback to in-memory store
 }
 
 function persist() {
   try {
     fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), 'utf-8');
   } catch (e) {
-    console.error('[DataStore] Failed to persist storage:', e.message);
+    try {
+      const tmpPath = path.resolve('/tmp', 'autotrust_store.json');
+      fs.writeFileSync(tmpPath, JSON.stringify(store, null, 2), 'utf-8');
+    } catch {
+      // Retain in-memory store
+    }
   }
 }
 
