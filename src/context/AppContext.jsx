@@ -314,7 +314,13 @@ export function AppProvider({ children }) {
       }
       return false;
     } catch (err) {
-      const msg = err.response?.data?.message || 'Registration failed. Please try again.';
+      const msg =
+        err.response?.data?.message ||
+        (err.code === 'ECONNABORTED'
+          ? 'Server request timed out. Please try again.'
+          : err.message?.includes('Network')
+          ? 'Unable to connect to AutoTrust server. Please try again.'
+          : 'Registration failed. Please try again.');
       setAuthError(msg);
       return false;
     }
@@ -332,7 +338,13 @@ export function AppProvider({ children }) {
       }
       return false;
     } catch (err) {
-      const msg = err.response?.data?.message || 'Invalid email or password.';
+      const msg =
+        err.response?.data?.message ||
+        (err.code === 'ECONNABORTED'
+          ? 'Server request timed out. Please try again.'
+          : err.message?.includes('Network')
+          ? 'Unable to connect to AutoTrust server. Please try again.'
+          : 'Invalid email or password.');
       setAuthError(msg);
       return false;
     }

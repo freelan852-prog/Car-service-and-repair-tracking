@@ -9,6 +9,7 @@ export const TOKEN_KEY = 'autotrust_token';
 
 export const apiClient = axios.create({
   baseURL: '/api',
+  timeout: 15000,
   headers: {
     'Content-Type': 'application/json',
   },

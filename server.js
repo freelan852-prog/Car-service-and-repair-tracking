@@ -4,6 +4,7 @@
  */
 
 import http from 'http';
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import express from 'express';
@@ -19,7 +20,7 @@ async function startServer() {
 
   const app = createApp();
   const isProd = process.env.NODE_ENV === 'production';
-  const port = config.port || 3000;
+  const port = process.env.PORT ? parseInt(process.env.PORT, 10) : (config.port || 3000);
 
   if (!isProd) {
     const { createServer: createViteServer } = await import('vite');
@@ -31,11 +32,20 @@ async function startServer() {
     console.log('[AutoTrust] Vite development middleware mounted.');
   } else {
     const distPath = path.resolve(__dirname, 'dist');
-    app.use(express.static(distPath));
-    app.get('*', (req, res) => {
-      res.sendFile(path.resolve(distPath, 'index.html'));
-    });
-    console.log('[AutoTrust] Serving production static build from dist.');
+    const indexPath = path.resolve(distPath, 'index.html');
+    if (fs.existsSync(distPath)) {
+      app.use(express.static(distPath));
+      app.get('*', (req, res) => {
+        if (fs.existsSync(indexPath)) {
+          res.sendFile(indexPath);
+        } else {
+          res.status(503).send('AutoTrust build in progress. Please refresh.');
+        }
+      });
+      console.log('[AutoTrust] Serving production static build from dist.');
+    } else {
+      console.warn('[AutoTrust] dist directory not found. Please run npm run build.');
+    }
   }
 
   app.listen(port, '0.0.0.0', () => {
